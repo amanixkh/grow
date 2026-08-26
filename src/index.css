@@ -1,111 +1,85 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import "tailwindcss";
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+@theme {
+  --color-bg: #FBF9F3;
+  --color-surface: #FFFFFF;
+  --color-surface-soft: #FBF9F3;
+  --color-border: #E6DFC9;
+  --color-border-soft: #F1EBDA;
+  --color-heading: #0F3D2E;
+  --color-text: #1B2420;
+  --color-muted: #5E6B62;
+  --color-faint: #98A39A;
+  --color-level-off: #F1EBDA;
+  --color-tag-green-bg: #DCF0E2;
+  --color-tag-green-text: #14663F;
+  --color-tag-tan-bg: #F3E9D3;
+  --color-tag-tan-text: #A85A15;
+  --color-accent: #1F8A54;
+  --color-accent-amber: #E08A34;
+  --color-accent-red: #C9645B;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --animate-glow-rotate: glow-rotate 4s linear infinite;
+}
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+@keyframes glow-rotate {
+  to { --glow-angle: 360deg; }
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+  --color-bg: #1A140F;
+  --color-surface: #241C15;
+  --color-surface-soft: #1F1810;
+  --color-border: #3A2E22;
+  --color-border-soft: #4A3B2C;
+  --color-heading: #F5EDE0;
+  --color-text: #F0E6D8;
+  --color-muted: #B8A890;
+  --color-faint: #8A7860;
+  --color-level-off: #2E2418;
+  --color-tag-green-bg: #2A3B2E;
+  --color-tag-green-text: #8FD9A8;
+  --color-tag-tan-bg: #3D2F1C;
+  --color-tag-tan-text: #E8B879;
+  --color-accent: #E0A868;
+  --color-accent-amber: #E8B879;
+  --color-accent-red: #E89478;
+}
+
+@property --glow-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@layer components {
+  .glow-ring {
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    padding: 2px;
+    opacity: 0;
+    background: conic-gradient(
+      from var(--glow-angle, 0deg),
+      var(--color-accent),
+      var(--color-accent-amber),
+      var(--color-accent-red),
+      var(--color-accent-amber),
+      var(--color-accent)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    filter: blur(3px);
+    transition: opacity 0.5s ease;
+    pointer-events: none;
   }
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  .glow-ring.is-active {
+    opacity: 0.85;
+    animation: glow-rotate 4s linear infinite;
   }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-body {
-  margin: 0;
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
 }
