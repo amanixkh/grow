@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { gsap } from "../lib/gsapConfig";
 
-export default function Navbar() {
+export default function Navbar({ variant = "home" }) {
   const navRef = useRef(null);
   const logoRef = useRef(null);
   const [isDark, setIsDark] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const saved = localStorage.getItem("nakheel-theme");
@@ -76,13 +78,25 @@ export default function Navbar() {
         </div>
 
         <div className="nav-right flex items-center gap-4">
-          <button
-            onClick={scrollToId("dashboard")}
-            className="relative text-[14.5px] font-bold text-[var(--heading)] group"
-          >
-            Dashboard
-            <span className="absolute left-0 -bottom-1.5 h-[2px] w-full bg-[#1F8A54] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300"></span>
-          </button>
+          {variant === "details" ? (
+            <button
+              onClick={() => navigate("/")}
+              className="inline-flex items-center gap-1.5 text-[14.5px] font-bold text-[var(--heading)] hover:text-[#1F8A54] transition-colors"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4">
+                <path d="M19 12H5M11 18l-6-6 6-6" />
+              </svg>
+              Back to Dashboard
+            </button>
+          ) : (
+            <button
+              onClick={scrollToId("dashboard")}
+              className="relative text-[14.5px] font-bold text-[var(--heading)] group"
+            >
+              Dashboard
+              <span className="absolute left-0 -bottom-1.5 h-[2px] w-full bg-[#1F8A54] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300"></span>
+            </button>
+          )}
 
           <button
             onClick={toggleDark}

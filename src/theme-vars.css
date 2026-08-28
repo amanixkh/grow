@@ -1,4 +1,7 @@
 :root {
+  --accent: #1F8A54;
+  --accent-amber: #E08A34;
+  --accent-red: #C9645B;
   --bg: #FBF9F3;
   --surface: #FFFFFF;
   --surface-soft: #FBF9F3;
@@ -18,6 +21,9 @@
 }
 
 .dark {
+  --accent: #C9895A;
+  --accent-amber: #E8B879;
+  --accent-red: #A8543A;
   --bg: #1A140F;
   --surface: #241C15;
   --surface-soft: #1F1810;
