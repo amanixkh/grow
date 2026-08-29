@@ -199,7 +199,7 @@ function Logo() {
 }
 
 export default function App() {
-  const [started, setStarted] = useState(false)
+  const [started] = useState(false)
 
   return (
     <div
@@ -300,7 +300,6 @@ export default function App() {
           {/* Button */}
           <button
             type="button"
-            onClick={() => setStarted(true)}
             aria-label="Start"
             className={`
               z-[3]
