@@ -53,7 +53,7 @@ export default function FilterPanel({
   const clearOne = (key, fallback = "") => () => setFilters({ ...filters, [key]: fallback });
 
   const selectClass =
-    "peer w-full appearance-none bg-[var(--surface)] border-[1.5px] border-[var(--border)] rounded-[12px] pl-10 pr-9 py-[11px] text-[13.5px] font-semibold text-[var(--text)] focus:border-[#1F8A54] focus:ring-4 focus:ring-[#1F8A54]/10 outline-none cursor-pointer transition-all hover:border-[var(--border-soft)]";
+    "peer w-full appearance-none bg-[var(--surface)] border-[1.5px] border-[var(--border)] rounded-[12px] pl-10 pr-9 py-[11px] text-[13.5px] font-semibold text-[var(--text)] dark:text-white dark:bg-stone-900/60 focus:border-[#1F8A54] focus:ring-4 focus:ring-[#1F8A54]/10 outline-none cursor-pointer transition-all hover:border-[var(--border-soft)]";
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -109,11 +109,11 @@ export default function FilterPanel({
 
         <div className="flex items-start justify-between mb-5 flex-wrap gap-3">
           <div>
-            <h2 className="text-[20px] text-[var(--heading)] font-extrabold tracking-tight">Find the right variety</h2>
-            <p className="text-[13px] text-[var(--faint)] mt-0.5">Filter by growing conditions to narrow things down</p>
+            <h2 className="text-[20px] text-[var(--heading)] font-extrabold tracking-tight dark:text-white">Find the right variety</h2>
+            <p className="text-[13px] text-[var(--faint)] mt-0.5 dark:text-stone-300">Filter by growing conditions to narrow things down</p>
           </div>
-          <div className="text-[13.5px] text-[var(--muted)] bg-[var(--surface-soft)] border border-[var(--border)] rounded-full px-3.5 py-1.5">
-            <b ref={countRef} className="text-[#1F8A54] font-extrabold inline-block">{resultCount}</b> of {totalCount} varieties
+          <div className="text-[13.5px] text-[var(--muted)] bg-[var(--surface-soft)] border border-[var(--border)] rounded-full px-3.5 py-1.5 dark:text-stone-200">
+            <b ref={countRef} className="text-[#1F8A54] dark:text-emerald-300 font-extrabold inline-block">{resultCount}</b> of {totalCount} varieties
           </div>
         </div>
 
@@ -145,7 +145,7 @@ export default function FilterPanel({
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
           {FIELDS.map((f) => (
             <div key={f.key}>
-              <label className="block text-[11.5px] font-extrabold text-[var(--muted)] uppercase tracking-wide mb-1.5">
+              <label className="block text-[11.5px] font-extrabold text-[var(--muted)] uppercase tracking-wide mb-1.5 dark:text-stone-200">
                 {f.label}
               </label>
               <div className="relative">

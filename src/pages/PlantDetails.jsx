@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { PALMS, LEVEL_LABEL } from "../Data/plams";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
+import { useLanguage } from "../LanguageContext";
 
 const LEVEL_PCT = {
   high: 100,
@@ -64,14 +65,26 @@ return (
 export default function PlantDetails() {
 const { id } = useParams();
 const navigate = useNavigate();
+const { lang } = useLanguage();
+const [darkMode, setDarkMode] = useState(() => {
+  if (typeof window === "undefined") return false;
+  const saved = localStorage.getItem("nakheel-theme");
+  if (saved) return saved === "dark";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+});
+
+useEffect(() => {
+  document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
+  document.documentElement.classList.toggle("dark", darkMode);
+  localStorage.setItem("nakheel-theme", darkMode ? "dark" : "light");
+}, [darkMode]);
 
 const palm = PALMS.find((p) => String(p.id) === id);
 
-useEffect(() => {
-window.scrollTo({
-top: 0,
-behavior: "instant"
-});
+useLayoutEffect(() => {
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
 }, [id]);
 
 if (!palm) {
@@ -101,10 +114,33 @@ p.id !== palm.id &&
 .slice(0, 3);
 
 return (
-<div className="bg-[var(--bg)] text-[var(--text)] min-h-screen font-sans transition-colors duration-300">
-<Navbar variant="details" />
+<div className={`min-h-screen font-sans transition-colors duration-300 ${darkMode ? "bg-[#0b1f15] text-white" : "bg-[#f4f1ea] text-[#1e293b]"}`} dir={lang === "ar" ? "rtl" : "ltr"}>
+<Navbar variant="details" darkMode={darkMode} setDarkMode={setDarkMode} />
 
 <main className="max-w-[1050px] mx-auto px-5 md:px-8 py-10 md:py-14">
+<section className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+  <button
+    type="button"
+    onClick={() => navigate(-1)}
+    className="inline-flex items-center gap-2 self-start rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[var(--heading)] shadow-sm transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+  >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-3.5 w-3.5">
+      <path d="M15 18l-6-6 6-6" />
+    </svg>
+    Back
+  </button>
+
+  <button
+    type="button"
+    onClick={() => navigate('/calculator', { state: { selectedPalm: { ...palm, spacing: 7, water: 180, carbon: 22, shade: palm.shade } } })}
+    className="inline-flex items-center gap-2 self-start rounded-full bg-[var(--accent)] px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-white shadow-[0_14px_30px_rgba(19,84,61,0.18)] transition hover:translate-y-[-1px]"
+  >
+    Open calculator
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-3.5 w-3.5">
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  </button>
+</section>
 
 <section className="mb-7">
 <div className="relative overflow-hidden bg-[var(--surface)] border border-[var(--border)] rounded-[24px] min-h-[250px]">
@@ -171,13 +207,13 @@ className="text-[11px] font-bold text-[var(--tag-green-text)] bg-[var(--tag-gree
 </div>
 
 <h2 className="text-[17px] font-extrabold text-[var(--heading)]">
-Overview
+Cultivation & Agronomic Tip
 </h2>
 
 </div>
 
 <p className="text-[14px] text-[var(--muted)] leading-relaxed">
-{palm.desc}
+{palm.tip || palm.desc}
 </p>
 </section>
 

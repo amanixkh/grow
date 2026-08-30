@@ -223,16 +223,30 @@ export const PALMS = [
     fruitColor: "Amber",
     history: "A cultivated date variety valued for its attractive fruit, sweetness, and firm texture.",
   },
-];
+]
 
 export const LEVEL_LABEL = {
   high: "High",
   med: "Medium",
   low: "Low",
-};
+}
 
 export const LEVEL_RANK = {
   high: 3,
   med: 2,
   low: 1,
-};
+}
+
+export const PALM_CALCULATOR_PROFILE = {
+  1: { spacing: 7, water: 180, carbon: 22, shade: 5.5 },
+  2: { spacing: 9, water: 145, carbon: 19, shade: 6.0 },
+  3: { spacing: 8, water: 155, carbon: 20, shade: 4.8 },
+}
+
+export const CALCULATOR_PALMS = [1, 2, 3].map((id) => {
+  const palm = PALMS.find((item) => item.id === id)
+  return {
+    ...palm,
+    ...PALM_CALCULATOR_PROFILE[id],
+  }
+})

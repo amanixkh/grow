@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import backImg from './assets/back.jpg'
 
 const BIRDS = [
@@ -11,83 +12,33 @@ const BIRDS = [
 
 const KEYFRAMES = `
   @keyframes fly-across {
-    0% {
-      transform: translateX(-70px) translateY(0);
-    }
-
-    20% {
-      transform: translateX(20vw) translateY(-5px);
-    }
-
-    40% {
-      transform: translateX(40vw) translateY(2px);
-    }
-
-    60% {
-      transform: translateX(60vw) translateY(-4px);
-    }
-
-    80% {
-      transform: translateX(80vw) translateY(3px);
-    }
-
-    100% {
-      transform: translateX(110vw) translateY(0);
-    }
+    0% { transform: translateX(-70px) translateY(0); }
+    20% { transform: translateX(20vw) translateY(-5px); }
+    40% { transform: translateX(40vw) translateY(2px); }
+    60% { transform: translateX(60vw) translateY(-4px); }
+    80% { transform: translateX(80vw) translateY(3px); }
+    100% { transform: translateX(110vw) translateY(0); }
   }
 
   @keyframes fly-across-reverse {
-    0% {
-      transform: translateX(70px) translateY(0) scaleX(-1);
-    }
-
-    20% {
-      transform: translateX(-20vw) translateY(-5px) scaleX(-1);
-    }
-
-    40% {
-      transform: translateX(-40vw) translateY(2px) scaleX(-1);
-    }
-
-    60% {
-      transform: translateX(-60vw) translateY(-4px) scaleX(-1);
-    }
-
-    80% {
-      transform: translateX(-80vw) translateY(3px) scaleX(-1);
-    }
-
-    100% {
-      transform: translateX(-110vw) translateY(0) scaleX(-1);
-    }
+    0% { transform: translateX(70px) translateY(0) scaleX(-1); }
+    20% { transform: translateX(-20vw) translateY(-5px) scaleX(-1); }
+    40% { transform: translateX(-40vw) translateY(2px) scaleX(-1); }
+    60% { transform: translateX(-60vw) translateY(-4px) scaleX(-1); }
+    80% { transform: translateX(-80vw) translateY(3px) scaleX(-1); }
+    100% { transform: translateX(-110vw) translateY(0) scaleX(-1); }
   }
 
   @keyframes flap-left {
-    0% {
-      transform: rotate(8deg);
-    }
-
-    50% {
-      transform: rotate(-8deg);
-    }
-
-    100% {
-      transform: rotate(8deg);
-    }
+    0% { transform: rotate(8deg); }
+    50% { transform: rotate(-8deg); }
+    100% { transform: rotate(8deg); }
   }
 
   @keyframes flap-right {
-    0% {
-      transform: rotate(-8deg);
-    }
-
-    50% {
-      transform: rotate(8deg);
-    }
-
-    100% {
-      transform: rotate(-8deg);
-    }
+    0% { transform: rotate(-8deg); }
+    50% { transform: rotate(8deg); }
+    100% { transform: rotate(-8deg); }
   }
 `
 
@@ -107,13 +58,7 @@ function Bird({ top, duration, delay, size, reverse }) {
       }}
       aria-hidden="true"
     >
-      <svg
-        width={size}
-        height={size * 0.45}
-        viewBox="0 0 60 28"
-        fill="none"
-        style={{ overflow: 'visible' }}
-      >
+      <svg width={size} height={size * 0.45} viewBox="0 0 60 28" fill="none" style={{ overflow: 'visible' }}>
         <path
           d="M30 14 C22 8 14 6 5 9 C14 8 21 11 29 16"
           stroke="currentColor"
@@ -121,12 +66,8 @@ function Bird({ top, duration, delay, size, reverse }) {
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          style={{
-            transformOrigin: '30px 14px',
-            animation: 'flap-left 0.8s ease-in-out infinite',
-          }}
+          style={{ transformOrigin: '30px 14px', animation: 'flap-left 0.8s ease-in-out infinite' }}
         />
-
         <path
           d="M30 14 C38 8 46 6 55 9 C46 8 39 11 31 16"
           stroke="currentColor"
@@ -134,10 +75,7 @@ function Bird({ top, duration, delay, size, reverse }) {
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          style={{
-            transformOrigin: '30px 14px',
-            animation: 'flap-right 0.8s ease-in-out infinite',
-          }}
+          style={{ transformOrigin: '30px 14px', animation: 'flap-right 0.8s ease-in-out infinite' }}
         />
       </svg>
     </span>
@@ -153,7 +91,6 @@ function Logo() {
         <path d="M13 26C13 26 13 17 13 13C13 9 16 6 21 6" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" opacity="0.55" />
         <path d="M13 26C13 26 13 17 13 13C13 9 10 6 5 6" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" opacity="0.55" />
       </svg>
-
       <span className="text-base font-semibold tracking-[.14em]">Nakheel</span>
     </span>
   )
@@ -161,26 +98,13 @@ function Logo() {
 
 export default function App() {
   const [started] = useState(false)
+  const navigate = useNavigate()
 
   return (
-    <div
-      className="relative min-h-screen overflow-hidden bg-[#172a24] text-[#f6e9c8]"
-      style={{ fontFamily: "'Trebuchet MS', Arial, sans-serif" }}
-    >
+    <div className="relative min-h-screen overflow-hidden bg-[#172a24] text-[#f6e9c8]" style={{ fontFamily: "'Trebuchet MS', Arial, sans-serif" }}>
       <style>{KEYFRAMES}</style>
-
-      <img
-        className="absolute inset-0 h-full w-full object-cover object-center"
-        src={backImg}
-        alt=""
-        aria-hidden="true"
-      />
-
-      <div
-        className="pointer-events-none absolute inset-0 h-full w-full bg-gradient-to-b from-[rgba(13,30,25,0.2)] to-[rgba(12,25,22,0.52)]"
-        aria-hidden="true"
-      />
-
+      <img className="absolute inset-0 h-full w-full object-cover object-center" src={backImg} alt="" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 h-full w-full bg-gradient-to-b from-[rgba(13,30,25,0.2)] to-[rgba(12,25,22,0.52)]" aria-hidden="true" />
       <div className="pointer-events-none absolute inset-0 z-[1] text-[#f6e9c8]" aria-hidden="true">
         {BIRDS.map((bird, index) => (
           <Bird key={index} {...bird} />
@@ -194,13 +118,9 @@ export default function App() {
       <main className="relative z-[1] grid min-h-[calc(100vh-80px)] place-items-center">
         <div className="ml-[17vw] mr-auto mt-[-3vh] flex w-[min(88vw,480px)] flex-col items-start gap-6 text-left max-[700px]:ml-auto max-[700px]:mr-[8vw] max-[700px]:mt-[-8vh] max-[700px]:w-[82vw] max-[700px]:gap-[23px]">
           <div className="max-w-[430px]">
-            <div
-              className="m-0 mb-3.5 whitespace-nowrap text-[clamp(27px,3.2vw,42px)] font-medium leading-[1.05] tracking-[.01em] text-[#fff3d2] max-[700px]:text-[29px]"
-              style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-            >
+            <div className="m-0 mb-3.5 whitespace-nowrap text-[clamp(27px,3.2vw,42px)] font-medium leading-[1.05] tracking-[.01em] text-[#fff3d2] max-[700px]:text-[29px]" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
               A grove that remembers your name
             </div>
-
             <p className="m-0 text-[15px] font-semibold leading-[1.6] tracking-[.04em] text-[#f0cc83] max-[700px]:leading-[1.5]">
               Where the palms breathe golden light.
             </p>
@@ -209,15 +129,11 @@ export default function App() {
           <button
             type="button"
             aria-label="Start"
+            onClick={() => navigate('/dashboard')}
             className={`z-[3] inline-flex min-w-[178px] items-center justify-between gap-[22px] rounded-full border border-[rgba(240,204,131,0.75)] py-[10px] pl-[19px] pr-[11px] text-[#f7e9c5] shadow-[0_10px_24px_rgba(10,29,21,0.24),inset_0_1px_rgba(255,255,255,0.12)] transition-all duration-[350ms] ease-in-out hover:-translate-y-[3px] hover:bg-[#285744] hover:shadow-[0_15px_28px_rgba(10,29,21,0.3),inset_0_1px_rgba(255,255,255,0.18)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-[#f6e9c8] motion-reduce:transition-none max-[700px]:min-w-[172px] max-[700px]:py-[14px] max-[700px]:pl-[18px] max-[700px]:pr-[14px] ${started ? 'bg-[#f2ca82]' : 'bg-[rgba(25,55,45,0.72)]'}`}
           >
-            <span className="font-bold text-[13px] tracking-[.05em]">
-              {started ? 'Welcome in' : 'Begin journey'}
-            </span>
-
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-[#f0cc83] text-[20px] text-[#203d32]" style={{ fontFamily: 'Arial, sans-serif' }} aria-hidden="true">
-              →
-            </span>
+            <span className="font-bold text-[13px] tracking-[.05em]">{started ? 'Welcome in' : 'Begin journey'}</span>
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-[#f0cc83] text-[20px] text-[#203d32]" style={{ fontFamily: 'Arial, sans-serif' }} aria-hidden="true">→</span>
           </button>
         </div>
       </main>
