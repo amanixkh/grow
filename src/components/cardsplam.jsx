@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "../lib/gsapConfig";
+import { useLanguage } from "../LanguageContext";
 
 const LEVEL_LABEL = {
   high: "High",
@@ -21,6 +22,7 @@ const LEVEL_COLOR = {
 };
 
 function LevelMeter({ level }) {
+  const { t } = useLanguage();
   return (
     <div className="flex items-center gap-2.5 flex-1">
       <div className="relative flex-1 h-[6px] rounded-full bg-[var(--level-off)] overflow-hidden">
@@ -42,7 +44,7 @@ function LevelMeter({ level }) {
           backgroundColor: `color-mix(in srgb, ${LEVEL_COLOR[level]} 14%, transparent)`
         }}
       >
-        {LEVEL_LABEL[level]}
+        {t(level === "med" ? "medium" : level)}
       </span>
     </div>
   );
@@ -51,6 +53,7 @@ function LevelMeter({ level }) {
 function PalmCard({ palm, isActive, isDimmed, onToggle }) {
   const cardRef = useRef(null);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!cardRef.current) return;
@@ -130,14 +133,14 @@ function PalmCard({ palm, isActive, isDimmed, onToggle }) {
       <div className="flex flex-col gap-3 py-1">
         <div className="flex items-center gap-3">
           <div className="text-[12px] text-[var(--muted)] font-bold w-[92px] flex-shrink-0 dark:text-stone-200">
-            Salinity
+            {t("salinityLabel")}
           </div>
           <LevelMeter level={palm.salinity} />
         </div>
 
         <div className="flex items-center gap-3">
           <div className="text-[12px] text-[var(--muted)] font-bold w-[92px] flex-shrink-0 dark:text-stone-200">
-            Water needs
+            {t("waterNeeds")}
           </div>
           <LevelMeter level={palm.water} />
         </div>
@@ -174,7 +177,7 @@ function PalmCard({ palm, isActive, isDimmed, onToggle }) {
             onClick={goToDetails}
             className="shine-btn inline-flex items-center gap-1.5 bg-[var(--accent)] text-white text-[11px] font-bold px-4 py-2 rounded-full shadow-[0_8px_20px_-6px_rgba(0,0,0,0.5)] hover:opacity-90 transition-opacity"
           >
-            View Details
+            {t("viewDetails")}
             <svg
               viewBox="0 0 24 24"
               fill="none"

@@ -18,6 +18,7 @@ const LEVEL_COLOR = {
 };
 
 function DetailMeter({ label, level }) {
+const { t } = useLanguage();
 return (
 <div>
 <div className="flex items-center justify-between mb-2">
@@ -32,7 +33,7 @@ color: LEVEL_COLOR[level],
 backgroundColor: `color-mix(in srgb, ${LEVEL_COLOR[level]} 14%, transparent)`
 }}
 >
-{LEVEL_LABEL[level]}
+{t(level === "med" ? "medium" : level)}
 </span>
 </div>
 
@@ -65,7 +66,7 @@ return (
 export default function PlantDetails() {
 const { id } = useParams();
 const navigate = useNavigate();
-const { lang } = useLanguage();
+const { lang, t } = useLanguage();
 const [darkMode, setDarkMode] = useState(() => {
   if (typeof window === "undefined") return false;
   const saved = localStorage.getItem("nakheel-theme");
@@ -92,13 +93,13 @@ return (
 <div className="bg-[var(--bg)] text-[var(--text)] min-h-screen flex items-center justify-center">
 <div className="text-center">
 <p className="text-[var(--muted)] mb-4">
-Variety not found.
+{t("notFound")}
 </p>
 <button
 onClick={() => navigate("/")}
 className="text-[var(--accent)] font-bold underline"
 >
-Back to Dashboard
+{t("backToDashboard")}
 </button>
 </div>
 </div>
@@ -121,21 +122,10 @@ return (
 <section className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
   <button
     type="button"
-    onClick={() => navigate(-1)}
-    className="inline-flex items-center gap-2 self-start rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[var(--heading)] shadow-sm transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
-  >
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-3.5 w-3.5">
-      <path d="M15 18l-6-6 6-6" />
-    </svg>
-    Back
-  </button>
-
-  <button
-    type="button"
     onClick={() => navigate('/calculator', { state: { selectedPalm: { ...palm, spacing: 7, water: 180, carbon: 22, shade: palm.shade } } })}
-    className="inline-flex items-center gap-2 self-start rounded-full bg-[var(--accent)] px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-white shadow-[0_14px_30px_rgba(19,84,61,0.18)] transition hover:translate-y-[-1px]"
+    className="inline-flex items-center gap-2 self-end rounded-full bg-[var(--accent)] px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-white shadow-[0_14px_30px_rgba(19,84,61,0.18)] transition hover:translate-y-[-1px] sm:ml-auto"
   >
-    Open calculator
+    {t("openCalculator")}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-3.5 w-3.5">
       <path d="M5 12h14M13 6l6 6-6 6" />
     </svg>
@@ -165,7 +155,7 @@ WebkitMaskImage:
 <div className="inline-flex items-center gap-2 mb-4">
 <span className="w-8 h-[2px] bg-[var(--accent)] rounded-full" />
 <span className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[var(--accent)]">
-Palm variety
+{t("palmVariety")}
 </span>
 </div>
 
@@ -179,7 +169,7 @@ Palm variety
 
 <div className="mt-4">
 <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--muted)] mb-2">
-Suitable Regions
+{t("suitableRegions")}
 </div>
 
 <div className="flex flex-wrap gap-1.5">
@@ -207,7 +197,7 @@ className="text-[11px] font-bold text-[var(--tag-green-text)] bg-[var(--tag-gree
 </div>
 
 <h2 className="text-[17px] font-extrabold text-[var(--heading)]">
-Cultivation & Agronomic Tip
+{t("cultivationTip")}
 </h2>
 
 </div>
@@ -221,18 +211,18 @@ Cultivation & Agronomic Tip
 <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[20px] p-6 md:p-7">
 
 <h2 className="text-[17px] font-extrabold text-[var(--heading)] mb-5">
-Growing Conditions
+{t("growingConditions")}
 </h2>
 
 <div className="flex flex-col gap-5">
 
-<DetailMeter label="Salinity tolerance" level={palm.salinity} />
-<DetailMeter label="Water needs" level={palm.water} />
+<DetailMeter label={t("salinity")} level={palm.salinity} />
+<DetailMeter label={t("waterNeeds")} level={palm.water} />
 
 <div className="flex items-center justify-between pt-3 border-t border-dashed border-[var(--border)]">
 
 <span className="text-[13px] text-[var(--muted)] font-bold">
-Shade coverage
+{t("shadeCoverage")}
 </span>
 
 <span className="text-[14px] text-[var(--heading)] font-extrabold">
@@ -264,11 +254,11 @@ className="w-5 h-5 text-[var(--tag-tan-text)]"
 
 <div>
 <h2 className="text-[20px] font-extrabold text-[var(--heading)]">
-Agriculture & Fruit Guide
+{t("fruitGuide")}
 </h2>
 
 <p className="text-[12.5px] text-[var(--muted)] mt-0.5">
-Key information about this variety
+{t("fruitGuideSubtitle")}
 </p>
 </div>
 
@@ -276,10 +266,10 @@ Key information about this variety
 
 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
 
-<InfoCard label="Harvest season" value={palm.harvest} />
-<InfoCard label="Palm height" value={palm.height} />
-<InfoCard label="Productive age" value={palm.productiveAge} />
-<InfoCard label="Fruit color" value={palm.fruitColor} />
+<InfoCard label={t("harvestSeason")} value={palm.harvest} />
+<InfoCard label={t("palmHeight")} value={palm.height} />
+<InfoCard label={t("productiveAge")} value={palm.productiveAge} />
+<InfoCard label={t("fruitColor")} value={palm.fruitColor} />
 
 </div>
 </section>
@@ -303,7 +293,7 @@ className="w-5 h-5 text-[var(--tag-tan-text)]"
 
 <div>
 <h2 className="text-[16px] font-extrabold text-[var(--heading)] mb-2">
-Historical & Cultural Note
+{t("historicalNote")}
 </h2>
 
 <p className="text-[13.5px] text-[var(--muted)] leading-relaxed">
@@ -318,7 +308,7 @@ Historical & Cultural Note
 <section>
 
 <h2 className="text-[19px] font-extrabold text-[var(--heading)] mb-4">
-Similar Varieties
+{t("similarVarieties")}
 </h2>
 
 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -335,7 +325,7 @@ className="text-left bg-[var(--surface)] border border-[var(--border)] rounded-[
 </div>
 
 <div className="text-[11px] text-[var(--muted)] mt-1">
-View variety
+{t("viewVariety")}
 </div>
 
 </button>

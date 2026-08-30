@@ -1,10 +1,12 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "../lib/gsapConfig";
+import { useLanguage } from "../LanguageContext";
 
 export default function Hero() {
   const heroRef = useRef(null);
   const visualRef = useRef(null);
   const palmRef = useRef(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -52,18 +54,17 @@ export default function Hero() {
       <div className="max-w-[1240px] mx-auto px-8 grid grid-cols-1 md:grid-cols-[1.15fr_.85fr] gap-14 items-center">
         <div>
           <h1 className="hero-title font-serif text-[32px] md:text-[44px] font-black text-[var(--heading)] leading-[1.28] tracking-tight">
-            Your reference guide to <em className="not-italic text-[#E08A34]">palm varieties</em> and urban greening
+            {t("heroTitleBefore")} <em className="not-italic text-[#E08A34]">{t("heroTitleAccent")}</em> {t("heroTitleAfter")}
           </h1>
           <p className="hero-lead mt-5 text-[16.5px] text-[var(--muted)] max-w-[520px] leading-relaxed">
-            An interactive database that helps you pick the right palm variety for your area based on soil
-            salinity, water needs, and shade coverage — helping bring more green space back into our cities.
+            {t("heroLead")}
           </p>
           <div className="hero-actions flex gap-3.5 mt-8">
             <button
               onClick={scrollToId("dashboard")}
               className="group bg-gradient-to-br from-[#14663F] to-[#0F3D2E] hover:from-[#1F8A54] hover:to-[#1F8A54] text-white px-6 py-3.5 rounded-xl text-[15px] font-bold shadow-lg transition-all hover:-translate-y-0.5 inline-flex items-center gap-2"
             >
-              Browse Varieties
+              {t("browseVarieties")}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1">
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>

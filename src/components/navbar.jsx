@@ -1,11 +1,13 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "../lib/gsapConfig";
+import { useLanguage } from "../LanguageContext";
 
 export default function Navbar({ variant = "home", darkMode, setDarkMode }) {
   const navRef = useRef(null);
   const logoRef = useRef(null);
   const navigate = useNavigate();
+  const { lang, setLang, t } = useLanguage();
   const isDark = darkMode ?? false;
 
   const toggleDark = () => {
@@ -74,7 +76,7 @@ export default function Navbar({ variant = "home", darkMode, setDarkMode }) {
           </div>
           <div>
             <div className="font-serif font-extrabold text-[19px] text-[var(--heading)] tracking-tight dark:text-white">Nakheel</div>
-            <div className="text-[12px] text-[var(--muted)] font-medium -mt-0.5 dark:text-stone-200">Palm Care &amp; Urban Greening Guide</div>
+            <div className="text-[12px] text-[var(--muted)] font-medium -mt-0.5 dark:text-stone-200">{t("brandTagline")}</div>
           </div>
         </div>
 
@@ -87,7 +89,7 @@ export default function Navbar({ variant = "home", darkMode, setDarkMode }) {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4">
                 <path d="M19 12H5M11 18l-6-6 6-6" />
               </svg>
-              Back
+              {t("back")}
             </button>
           ) : variant === "dashboard" ? (
             <button
@@ -97,17 +99,35 @@ export default function Navbar({ variant = "home", darkMode, setDarkMode }) {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4">
                 <path d="M3 10.5 12 3l9 7.5M5 9.5V20h14V9.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              Home
+              {t("home")}
             </button>
           ) : (
             <button
               onClick={scrollToId("dashboard")}
               className="relative text-[14.5px] font-bold text-[var(--heading)] group dark:text-white"
             >
-              Dashboard
+              {t("dashboard")}
               <span className="absolute left-0 -bottom-1.5 h-[2px] w-full bg-[#1F8A54] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300"></span>
             </button>
           )}
+
+          <div className="flex items-center rounded-full border border-[var(--border)] bg-[var(--surface)] p-1 text-[10px] font-bold shadow-sm">
+            {[
+              ["en", "English"],
+              ["ar", "العربية"],
+              ["ku", "کوردی"],
+            ].map(([code, label]) => (
+              <button
+                key={code}
+                type="button"
+                onClick={() => setLang(code)}
+                className={`rounded-full px-2 py-1 transition-colors ${lang === code ? "bg-[var(--accent)] text-white" : "text-[var(--muted)] hover:text-[var(--heading)]"}`}
+                aria-label={`${t("language")}: ${label}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
 
           <button
             onClick={toggleDark}

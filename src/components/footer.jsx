@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "../lib/gsapConfig";
+import { useLanguage } from "../LanguageContext";
 
 export default function Footer() {
   const footerRef = useRef(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -43,11 +45,11 @@ export default function Footer() {
         <div className="flex items-center gap-2">
           <span className="font-serif font-extrabold text-[var(--heading)] text-[15px]">Nakheel</span>
           <span className="w-1 h-1 rounded-full bg-[var(--faint)]"></span>
-          <span className="text-[12px] font-bold text-[var(--muted)] tracking-wide uppercase">Palm reference tool</span>
+          <span className="text-[12px] font-bold text-[var(--muted)] tracking-wide uppercase">{t("footerTool")}</span>
         </div>
 
         <p className="text-[13px] text-[var(--faint)] text-center max-w-[440px] leading-relaxed">
-          A sample reference tool showcasing a curated set of palm varieties. Not an exhaustive or verified database.
+          {t("footerText")}
         </p>
       </div>
     </footer>
