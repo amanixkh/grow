@@ -104,7 +104,7 @@ export const translations = {
     notFound: "Variety not found.",
     backToDashboard: "Back to dashboard",
   },
-  ar: {
+    ar: {
     language: "اللغة",
     home: "الرئيسية",
     dashboard: "لوحة الاستكشاف",
@@ -208,6 +208,13 @@ export const translations = {
     annualAbsorption: "معدل الامتصاص السنوي:",
     notFound: "الصنف غير موجود.",
     backToDashboard: "العودة للوحة الاستكشاف",
+    varietiesDocumented: "أنواع النخيل المسجلة",
+    regionsCovered: "المحافظات المغطاة في العراق",
+    highSalinityTolerant: "أصناف تتحمل الملوحة العالية",
+    browserExecution: "يعمل بالكامل داخل المتصفح بدون خادم",
+    chartTitle: "توزيع الأصناف في لمحة سريعة",
+    chartSubtitle: "استناداً إلى جميع الأصناف المسجلة",
+    quickOverview: "معلومات سريعة",
   },
   ku: {
     language: "زمان",
@@ -313,5 +320,12 @@ export const translations = {
     annualAbsorption: "ڕێژەی هەڵمژینی ساڵانە:",
     notFound: "ئەم جۆرە نەدۆزرایەوە.",
     backToDashboard: "گەڕانەوە بۆ داشبۆرد",
+    varietiesDocumented: "جۆری خورمای تۆمارکراو",
+    regionsCovered: "پارێزگای داپۆشراو لە عێراق",
+    highSalinityTolerant: "جۆری بەرگەی شۆری بەرز",
+    browserExecution: "تەواوی لەناو وێبگەڕدا کاردەکات، بەبێ سێرڤەر",
+    chartTitle: "دابەشبوونی جۆرەکان بە چاوێک",
+    chartSubtitle: "بەپێی هەموو جۆرە تۆمارکراوەکان",
+    quickOverview: "پێشبینینی خێرا",
   },
 };
