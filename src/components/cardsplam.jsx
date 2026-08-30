@@ -112,7 +112,7 @@ function PalmCard({ palm, isActive, isDimmed, onToggle }) {
           </div>
 
           <div className="min-w-0">
-            <h3 className="text-[19px] font-extrabold text-[var(--heading)] truncate">
+            <h3 className="text-[19px] font-extrabold text-[var(--heading)] truncate dark:text-white">
               {palm.name}
             </h3>
           </div>
@@ -123,20 +123,20 @@ function PalmCard({ palm, isActive, isDimmed, onToggle }) {
         </div>
       </div>
 
-      <p className="text-[13.5px] text-[var(--muted)] leading-relaxed min-h-[42px]">
+      <p className="text-[13.5px] text-[var(--muted)] leading-relaxed min-h-[42px] dark:text-stone-200">
         {palm.desc}
       </p>
 
       <div className="flex flex-col gap-3 py-1">
         <div className="flex items-center gap-3">
-          <div className="text-[12px] text-[var(--muted)] font-bold w-[92px] flex-shrink-0">
+          <div className="text-[12px] text-[var(--muted)] font-bold w-[92px] flex-shrink-0 dark:text-stone-200">
             Salinity
           </div>
           <LevelMeter level={palm.salinity} />
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="text-[12px] text-[var(--muted)] font-bold w-[92px] flex-shrink-0">
+          <div className="text-[12px] text-[var(--muted)] font-bold w-[92px] flex-shrink-0 dark:text-stone-200">
             Water needs
           </div>
           <LevelMeter level={palm.water} />
@@ -154,7 +154,7 @@ function PalmCard({ palm, isActive, isDimmed, onToggle }) {
         ))}
       </div>
 
-      <div className="flex gap-2.5 items-start text-[12.5px] text-[var(--muted)] bg-[var(--surface-soft)] border border-[var(--border)] rounded-[11px] px-3.5 py-3 leading-relaxed">
+      <div className="flex gap-2.5 items-start text-[12.5px] text-[var(--muted)] bg-[var(--surface-soft)] border border-[var(--border)] rounded-[11px] px-3.5 py-3 leading-relaxed dark:text-stone-200 dark:bg-stone-800/60">
         <svg
           viewBox="0 0 24 24"
           fill="none"

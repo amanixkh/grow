@@ -112,13 +112,13 @@ export default function StatsStrip() {
               </svg>
             </div>
             <div
-              className="stat-num font-serif font-black text-[30px] text-[var(--heading)]"
+              className="stat-num font-serif font-black text-[30px] text-[var(--heading)] dark:text-white"
               data-value={s.num}
               data-suffix={s.suffix}
             >
               0{s.suffix}
             </div>
-            <div className="text-[13px] text-[var(--muted)] mt-1.5 font-medium">{s.lab}</div>
+            <div className="text-[13px] text-[var(--muted)] mt-1.5 font-medium dark:text-stone-200">{s.lab}</div>
           </div>
         ))}
       </div>
