@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "../lib/gsapConfig";
+import { useLanguage } from "../LanguageContext";
 
 const REGION_OPTIONS = [
   ["", "All regions"],
@@ -48,6 +49,14 @@ export default function FilterPanel({
   const panelRef = useRef(null);
   const countRef = useRef(null);
   const prevCount = useRef(resultCount);
+  const { t } = useLanguage();
+
+  const fields = [
+    { key: "region", label: t("region"), options: [["", t("allRegions")], ...REGION_OPTIONS.slice(1)] },
+    { key: "salinity", label: t("salinity"), options: [["", t("all")], ["high", t("high")], ["med", t("medium")], ["low", t("low")]] },
+    { key: "water", label: t("waterNeeds"), options: [["", t("all")], ["high", t("high")], ["med", t("medium")], ["low", t("low")]] },
+    { key: "sort", label: t("sortBy"), options: [["name", t("sortName")], ["shade", t("sortShade")], ["salinity", t("sortSalinity")]] },
+  ];
 
   const update = (key) => (e) => setFilters({ ...filters, [key]: e.target.value });
   const clearOne = (key, fallback = "") => () => setFilters({ ...filters, [key]: fallback });
@@ -89,12 +98,12 @@ export default function FilterPanel({
     filters.region && { key: "region", label: filters.region, clear: clearOne("region") },
     filters.salinity && {
       key: "salinity",
-      label: `Salinity: ${LEVEL_OPTIONS.find(([v]) => v === filters.salinity)?.[1]}`,
+      label: `${t("salinity")}: ${fields[1].options.find(([v]) => v === filters.salinity)?.[1]}`,
       clear: clearOne("salinity"),
     },
     filters.water && {
       key: "water",
-      label: `Water: ${LEVEL_OPTIONS.find(([v]) => v === filters.water)?.[1]}`,
+      label: `${t("waterNeeds")}: ${fields[2].options.find(([v]) => v === filters.water)?.[1]}`,
       clear: clearOne("water"),
     },
   ].filter(Boolean);
@@ -109,11 +118,11 @@ export default function FilterPanel({
 
         <div className="flex items-start justify-between mb-5 flex-wrap gap-3">
           <div>
-            <h2 className="text-[20px] text-[var(--heading)] font-extrabold tracking-tight dark:text-white">Find the right variety</h2>
-            <p className="text-[13px] text-[var(--faint)] mt-0.5 dark:text-stone-300">Filter by growing conditions to narrow things down</p>
+            <h2 className="text-[20px] text-[var(--heading)] font-extrabold tracking-tight dark:text-white">{t("findVariety")}</h2>
+            <p className="text-[13px] text-[var(--faint)] mt-0.5 dark:text-stone-300">{t("filterHint")}</p>
           </div>
           <div className="text-[13.5px] text-[var(--muted)] bg-[var(--surface-soft)] border border-[var(--border)] rounded-full px-3.5 py-1.5 dark:text-stone-200">
-            <b ref={countRef} className="text-[#1F8A54] dark:text-emerald-300 font-extrabold inline-block">{resultCount}</b> of {totalCount} varieties
+            <b ref={countRef} className="text-[#1F8A54] dark:text-emerald-300 font-extrabold inline-block">{resultCount}</b> / {totalCount} {t("varieties")}
           </div>
         </div>
 
@@ -124,7 +133,7 @@ export default function FilterPanel({
           </svg>
           <input
             type="text"
-            placeholder="Search by variety name… e.g. Barhee, Zahdi, Khastawi"
+            placeholder={t("searchPlaceholder")}
             value={filters.query}
             onChange={update("query")}
             className="w-full bg-[var(--surface-soft)] border-[1.5px] border-[var(--border)] rounded-[12px] pl-11 pr-11 py-3.5 outline-none text-[15px] text-[var(--text)] placeholder:text-[var(--faint)] focus:border-[#1F8A54] focus:ring-4 focus:ring-[#1F8A54]/10 transition-all"
@@ -132,7 +141,7 @@ export default function FilterPanel({
           {filters.query && (
             <button
               onClick={clearOne("query")}
-              aria-label="Clear search"
+              aria-label={t("clearSearch")}
               className="absolute right-3.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[var(--border)] hover:bg-[var(--border-soft)] flex items-center justify-center transition-colors"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="var(--muted)" strokeWidth="2.5" className="w-3 h-3">
@@ -143,7 +152,7 @@ export default function FilterPanel({
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-          {FIELDS.map((f) => (
+          {fields.map((f) => (
             <div key={f.key}>
               <label className="block text-[11.5px] font-extrabold text-[var(--muted)] uppercase tracking-wide mb-1.5 dark:text-stone-200">
                 {f.label}
@@ -167,7 +176,7 @@ export default function FilterPanel({
 
         {activeChips.length > 0 && (
           <div className="flex items-center flex-wrap gap-2 mt-5 pt-4 border-t border-dashed border-[var(--border)]">
-            <span className="text-[12px] font-bold text-[var(--faint)] mr-0.5">Active:</span>
+            <span className="text-[12px] font-bold text-[var(--faint)] mr-0.5">{t("active")}</span>
             {activeChips.map((chip) => (
               <button
                 key={chip.key}
@@ -185,7 +194,7 @@ export default function FilterPanel({
                 onClick={onReset}
                 className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[var(--tag-tan-text)] bg-[var(--tag-tan-bg)] hover:opacity-80 rounded-full px-3 py-1.5 transition-opacity ml-auto"
               >
-                Reset all
+                {t("resetAll")}
               </button>
             )}
           </div>

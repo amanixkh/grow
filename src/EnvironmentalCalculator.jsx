@@ -2,6 +2,7 @@ import { useMemo, useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useLanguage } from "./LanguageContext";
 
 const PALMS = [
   { id: "barhee", name: "Barhee", scientific: "Phoenix dactylifera", shade: 5.5, water: 180, carbon: 22, spacing: 7 },
@@ -783,6 +784,7 @@ export default function EnvironmentalCalculator() {
   const backButtonRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const { lang, dir, setLang, t } = useLanguage();
 
     const [palm, setPalm] = useState(location.state?.selectedPalm || PALMS[0]);
   const [trees, setTrees] = useState(location.state?.trees || 24);
@@ -897,38 +899,38 @@ export default function EnvironmentalCalculator() {
 
   const metrics = [
     {
-      title: "Number of Palms",
+      title: t("numberOfPalms"),
       value: trees,
-      unit: "palms",
-      description: "Planned palms in this landscape",
+      unit: t("palms"),
+      description: `${t("projectSetup")}: ${t("palms")}`,
       progress: Math.min(100, trees / 1.2),
     },
     {
-      title: "Shade Coverage",
+      title: t("shadeCoverage"),
       value: results.shade,
       unit: "m²",
-      description: `${results.shadePercent}% of the recommended project area`,
+      description: `${results.shadePercent}% ${t("autoArea")}`,
       progress: results.shadePercent,
     },
     {
-      title: "CO₂ Absorption",
+      title: t("carbonSequestration"),
       value: results.carbon,
       unit: "kg",
-      description: `Estimated over your ${years}-year horizon`,
+      description: `${years} ${t("yearsProjection")}`,
       progress: Math.min(100, results.carbon / 100),
     },
     {
-      title: "Annual Irrigation Estimate",
+      title: t("annualWater"),
       value: results.annualWater,
       unit: "L / year",
-      description: `${results.saving.toLocaleString()} L saved over the full horizon`,
+      description: `${results.saving.toLocaleString()} L`,
       progress: Math.min(100, results.annualWater / 50),
     },
     {
-      title: "Estimated Cooling Effect",
+      title: t("estimatedCooling"),
       value: results.cooling,
       unit: "m² shade",
-      description: "A planning estimate for cooler outdoor space",
+      description: t("growthForecast"),
       progress: Math.min(100, results.cooling / 2),
     },
   ];
@@ -989,6 +991,7 @@ export default function EnvironmentalCalculator() {
   return (
     <div
       ref={root}
+      dir={dir}
       className={`min-h-screen overflow-x-hidden ${bgClass} ${textClass} transition-colors duration-500`}
     >
       {/* Background gradient glow */}
@@ -1007,34 +1010,48 @@ export default function EnvironmentalCalculator() {
       >
         <div className="mx-auto flex h-20 max-w-[1280px] items-center justify-between px-5 sm:px-8">
           <div className="flex items-center gap-3">
-            <button
-              ref={backButtonRef}
-              type="button"
-              onClick={() => navigate(-1)}
-              className={`inline-flex items-center gap-2 rounded-full border ${borderClass} bg-white/5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#8fbd91] shadow-[0_12px_28px_rgba(12,18,13,0.12)] transition-all duration-300 hover:bg-[#8fbd91]/10`}
-              aria-label="Go back to previous page"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Back
-            </button>
             <div className="w-[42px] h-[42px] rounded-[11px] flex items-center justify-center shadow bg-gradient-to-br from-[#34A868] to-[#0F3D2E] text-white">
               <LeafMark size={22} />
             </div>
             <div>
               <div className="font-serif font-extrabold text-[19px] text-[var(--heading)] tracking-tight dark:text-white">Nakheel</div>
-              <div className={`text-[11px] font-medium -mt-0.5 ${secondaryTextClass}`}>Palm Care &amp; Urban Greening Guide</div>
+              <div className={`text-[11px] font-medium -mt-0.5 ${secondaryTextClass}`}>{t("calculatorTagline")}</div>
             </div>
           </div>
-          <button
-            onClick={() => setIsDark(!isDark)}
-            className={`flex items-center gap-2 rounded-full ${borderClass} border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.15em] transition-all hover:bg-white/5`}
-            aria-label="Toggle theme"
-          >
-            {isDark ? <Sun /> : <Moon />}
-            <span className={secondaryTextClass}>{isDark ? "Light" : "Dark"}</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <div className="hidden items-center rounded-full border border-[var(--border)] bg-[var(--surface)] p-1 text-[10px] font-bold shadow-sm sm:flex">
+              {[["en", "English"], ["ar", "العربية"], ["ku", "کوردی"]].map(([code, label]) => (
+                <button
+                  key={code}
+                  type="button"
+                  onClick={() => setLang(code)}
+                  className={`rounded-full px-2 py-1 transition-colors ${lang === code ? "bg-[var(--accent)] text-white" : "text-[var(--muted)] hover:text-[var(--heading)]"}`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <button
+              ref={backButtonRef}
+              type="button"
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-1.5 text-[14.5px] font-bold text-[var(--heading)] transition-colors hover:text-[#1F8A54] dark:text-white"
+              aria-label="Go back to previous page"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-4 w-4" aria-hidden="true">
+                <path d="M19 12H5M11 18l-6-6 6-6" />
+              </svg>
+              {t("back")}
+            </button>
+            <button
+              onClick={() => setIsDark(!isDark)}
+              className={`flex items-center gap-2 rounded-full ${borderClass} border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.15em] transition-all hover:bg-white/5`}
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun /> : <Moon />}
+              <span className={secondaryTextClass}>{isDark ? t("light") : t("dark")}</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -1046,16 +1063,16 @@ export default function EnvironmentalCalculator() {
             <div>
               <p className="mb-4 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[.22em] text-[#d89a68]">
                 <span className="h-px w-8 bg-[#d89a68]" />
-                Environmental impact calculator
+                {t("calculatorEyebrow")}
               </p>
 
               <h1 className="max-w-3xl font-serif text-5xl leading-[.98] sm:text-7xl">
-                Shape a cooler,{" "}
-                <span className="text-[#d89a68]">greener</span> place.
+                {t("calculatorTitleBefore")} {" "}
+                <span className="text-[#d89a68]">{t("calculatorTitleAccent")}</span>{" "}{t("calculatorTitleAfter")}
               </h1>
 
               <p className={`mt-6 max-w-xl text-base leading-7 ${secondaryTextClass}`}>
-                Build your planting plan and see its environmental value respond as you make decisions.
+                {t("calculatorLead")}
               </p>
             </div>
 
@@ -1074,15 +1091,15 @@ export default function EnvironmentalCalculator() {
             {/* Left column: Setup controls */}
             <div className={`border-b ${borderClass} p-6 sm:p-10 lg:border-b-0 lg:border-r`}>
               <p className="mb-2 text-[10px] font-bold uppercase tracking-[.2em] text-[#8fbd91]">
-                01 / Project setup
+                01 / {t("projectSetup")}
               </p>
               <h2 className="mb-8 font-serif text-4xl leading-none">
-                Build your<br />planting plan.
+                {t("buildPlan")}
               </h2>
 
               <div className="mb-8 overflow-hidden rounded-[26px] border border-[var(--border)] bg-[linear-gradient(135deg,rgba(139,189,146,0.12),rgba(255,255,255,0.04))] p-4 shadow-[0_18px_40px_rgba(19,49,35,0.08)]">
                 <div className="mb-3 flex items-center justify-between">
-                  <div className="text-[10px] font-bold uppercase tracking-[.18em] text-[#8fbd91]">Planner accent</div>
+                  <div className="text-[10px] font-bold uppercase tracking-[.18em] text-[#8fbd91]">{t("plannerAccent")}</div>
                   <span className="h-2.5 w-2.5 rounded-full bg-[#8fbd91] shadow-[0_0_16px_rgba(143,189,145,0.9)]" />
                 </div>
                 <div className="flex items-center gap-4">
@@ -1098,20 +1115,20 @@ export default function EnvironmentalCalculator() {
 
               <div className="space-y-8">
                 <Slider
-                  label="Number of palms"
+                  label={t("numberOfPalms")}
                   value={trees}
                   min={1}
                   max={120}
-                  unit=" palms"
+                  unit={` ${t("palms")}`}
                   onChange={setTrees}
                   isDark={isDark}
                 />
                 <Slider
-                  label="Planning horizon"
+                  label={t("planningHorizon")}
                   value={years}
                   min={1}
                   max={30}
-                  unit=" years"
+                  unit={` ${t("years")}`}
                   onChange={setYears}
                   isDark={isDark}
                 />
@@ -1121,7 +1138,7 @@ export default function EnvironmentalCalculator() {
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <label htmlFor="area" className="text-sm font-bold">
-                      Auto recommended area
+                      {t("autoArea")}
                     </label>
                     <p className={`mt-1 text-xs leading-5 ${secondaryTextClass}`}>
                       Based on {palm.name} spacing of {palm.spacing}m × {palm.spacing}m.
@@ -1134,7 +1151,7 @@ export default function EnvironmentalCalculator() {
                         : "bg-[#d89a68]/15 text-[#d89a68]"
                     }`}
                   >
-                    {area >= recommended ? "Good density" : "Review spacing"}
+                    {area >= recommended ? t("goodDensity") : t("reviewSpacing")}
                   </span>
                 </div>
                 <div className="mt-4 flex items-center gap-2">
@@ -1169,14 +1186,14 @@ export default function EnvironmentalCalculator() {
               <div className="mb-8 flex items-end justify-between gap-4">
                 <div>
                   <p className="mb-2 text-[10px] font-bold uppercase tracking-[.2em] text-[#d89a68]">
-                    02 / Live preview
+                    02 / {t("livePreview")}
                   </p>
                   <h2 className="font-serif text-4xl leading-none">
-                    See your impact,<br />as you plan.
+                    {t("seeImpact")}
                   </h2>
                 </div>
                 <span className={`hidden rounded-full ${isDark ? "bg-[#8fbd91]/10" : "bg-[#8fbd91]/15"} px-3 py-2 text-[9px] font-bold uppercase tracking-[.14em] text-[#8fbd91] sm:block`}>
-                  Live estimate
+                  {t("liveEstimate")}
                 </span>
               </div>
 
@@ -1189,7 +1206,7 @@ export default function EnvironmentalCalculator() {
               <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_155px]">
                 <div className={`rounded-[22px] border ${borderClass} ${cardBgClass} p-5`}>
                   <p className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.16em] text-[#8fbd91]">
-                    <Leaf size={16} /> Selected palm
+                    <Leaf size={16} /> {t("selectedPalm")}
                   </p>
                   <h3 className="font-serif text-2xl">{palm.name}</h3>
                   <p className={`mt-1 text-xs italic ${secondaryTextClass}`}>{palm.scientific || "Phoenix dactylifera"}</p>
@@ -1203,7 +1220,7 @@ export default function EnvironmentalCalculator() {
               </div>
 
               <div className={`mt-3 rounded-[22px] border ${borderClass} ${isDark ? "bg-black/10" : "bg-black/5"} p-5`}>
-                <p className="text-sm font-bold">Generated summary</p>
+                <p className="text-sm font-bold">{t("generatedSummary")}</p>
                 <p className={`mt-2 text-sm leading-6 ${secondaryTextClass}`}>
                   Your {trees} {palm.name} palms can provide approximately {results.shade.toLocaleString()} m² of
                   shade and absorb around {results.carbon.toLocaleString()} kg of CO₂ over {years} years.
@@ -1215,13 +1232,12 @@ export default function EnvironmentalCalculator() {
                 onClick={toggle}
                 className="mt-4 flex w-full items-center justify-between rounded-xl bg-[#8fbd91] px-5 py-4 text-left text-sm font-bold text-[#102019] transition-all hover:bg-[#a5cca7]"
               >
-                {expanded ? "Close project preview" : "Continue to project preview"}
+                {expanded ? t("closePreview") : t("continuePreview")}
                 <Arrow />
               </button>
 
               <p className={`mt-4 text-[10px] leading-5 ${isDark ? "text-white/25" : "text-black/25"}`}>
-                Illustrative planning figures. Actual outcomes vary with climate, soil, irrigation, palm age and
-                maintenance.
+                {t("illustrative")}
               </p>
             </div>
           </div>
@@ -1234,11 +1250,11 @@ export default function EnvironmentalCalculator() {
             <div className="grid gap-8 p-6 sm:p-10 lg:grid-cols-2 lg:p-12">
               <div>
                 <p className="mb-3 text-[10px] font-bold uppercase tracking-[.2em] text-[#d89a68]">
-                  03 / Project preview
+                  03 / {t("projectPreview")}
                 </p>
-                <h2 className="font-serif text-4xl">Your project, in focus.</h2>
+                <h2 className="font-serif text-4xl">{t("projectFocus")}</h2>
                 <span className="mt-3 inline-block rounded-full bg-[#8fbd91]/15 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[.12em] text-[#8fbd91]">
-                  Live estimate
+                  {t("liveEstimate")}
                 </span>
                 <p className={`mt-4 max-w-md text-sm leading-6 ${secondaryTextClass}`}>
                   A {area.toLocaleString()} m² landscape with {trees} {palm.name} palms, planned across a {years}-year
@@ -1248,7 +1264,7 @@ export default function EnvironmentalCalculator() {
 
               <div className="space-y-5">
                 <div className="flex justify-between text-xs">
-                  <b className={isDark ? "text-white/75" : "text-black/75"}>Environmental value</b>
+                  <b className={isDark ? "text-white/75" : "text-black/75"}>{t("environmentalValue")}</b>
                   <b className="text-[#8fbd91]">{results.score}% ready</b>
                 </div>
                 <div className={`h-2 overflow-hidden rounded-full ${isDark ? "bg-white/10" : "bg-black/10"}`}>
@@ -1260,7 +1276,7 @@ export default function EnvironmentalCalculator() {
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className={`rounded-xl border ${borderClass} p-4`}>
-                    <p className={`text-[10px] uppercase tracking-[.13em] ${secondaryTextClass}`}>Project details</p>
+                    <p className={`text-[10px] uppercase tracking-[.13em] ${secondaryTextClass}`}>{t("projectDetails")}</p>
                     <p className="mt-2 text-sm font-bold">
                       {palm.name} / {trees} palms
                     </p>
@@ -1270,7 +1286,7 @@ export default function EnvironmentalCalculator() {
                   </div>
                   <div className={`rounded-xl border ${borderClass} p-4`}>
                     <p className={`text-[10px] uppercase tracking-[.13em] ${secondaryTextClass}`}>
-                      Environmental value
+                      {t("environmentalValue")}
                     </p>
                     <p className="mt-2 text-sm font-bold">{results.carbon.toLocaleString()} kg CO₂</p>
                     <p className={`mt-1 text-xs ${secondaryTextClass}`}>
@@ -1283,11 +1299,11 @@ export default function EnvironmentalCalculator() {
 
             <div className={`border-t ${borderClass} p-6 sm:p-10 lg:p-12`}>
               <p className="mb-6 text-[10px] font-bold uppercase tracking-[.2em] text-[#d89a68]">
-                04 / Calculation summary
+                04 / {t("calculationSummary")}
               </p>
               <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
                 <section className={`rounded-[28px] border ${borderClass} ${cardBgClass} p-7`}>
-                  <div className={`mb-7 text-xs font-bold uppercase tracking-[0.18em] ${isDark ? "text-[#8fbd91]" : "text-[#47785A]"}`}>Project parameters</div>
+                  <div className={`mb-7 text-xs font-bold uppercase tracking-[0.18em] ${isDark ? "text-[#8fbd91]" : "text-[#47785A]"}`}>{t("projectParameters")}</div>
                   <div className="mb-8 flex items-center gap-4">
                     <div className={`grid h-14 w-14 place-items-center rounded-2xl ${isDark ? "bg-[#8fbd91]/20 text-[#8fbd91]" : "bg-[#82B58C]/20 text-[#47785A]"}`}><LeafMark /></div>
                     <div>
@@ -1304,8 +1320,8 @@ export default function EnvironmentalCalculator() {
 
                 <section className="rounded-[28px] border border-[#183326]/10 bg-[#183326] p-7 text-[#F5F0E5] shadow-[0_24px_70px_rgba(36,60,45,.16)]">
                   <div className="mb-7 flex items-center justify-between">
-                    <div className="text-xs font-bold uppercase tracking-[0.18em] text-[#D99A6B]">Environmental value</div>
-                    <div className="rounded-full bg-[#82B58C]/20 px-3 py-1 text-[10px] font-bold text-[#82B58C]">Live estimate</div>
+                    <div className="text-xs font-bold uppercase tracking-[0.18em] text-[#D99A6B]">{t("environmentalValue")}</div>
+                    <div className="rounded-full bg-[#82B58C]/20 px-3 py-1 text-[10px] font-bold text-[#82B58C]">{t("liveEstimate")}</div>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-3">
                     <div><div className="text-4xl font-serif text-white">{calculationPlan.results.shade.toLocaleString()}</div><div className="mt-1 text-xs text-white/70">m² shade</div></div>
@@ -1323,33 +1339,33 @@ export default function EnvironmentalCalculator() {
             {/* Environmental Metrics */}
             <div className={`border-t ${borderClass} p-6 sm:p-10 lg:p-12`}>
               <p className="mb-6 text-[10px] font-bold uppercase tracking-[.2em] text-[#d89a68]">
-                05 / Environmental metrics
+                05 / {t("environmentalMetrics")}
               </p>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div className={`rounded-2xl border ${borderClass} ${cardBgClass} p-5`}>
                   <p className={`text-[10px] font-bold uppercase tracking-[.15em] ${isDark ? "text-[#8fbd91]" : "text-[#186a43]"}`}>
-                    Shade Coverage
+                    {t("shadeCoverage")}
                   </p>
                   <p className="mt-3 font-serif text-2xl text-[var(--heading)]">{results.shade.toLocaleString()}</p>
                   <p className={`text-xs ${secondaryTextClass}`}>m² of shade</p>
                 </div>
                 <div className={`rounded-2xl border ${borderClass} ${cardBgClass} p-5`}>
                   <p className={`text-[10px] font-bold uppercase tracking-[.15em] ${isDark ? "text-[#8fbd91]" : "text-[#186a43]"}`}>
-                    Carbon Sequestration
+                    {t("carbonSequestration")}
                   </p>
                   <p className="mt-3 font-serif text-2xl text-[var(--heading)]">{results.carbon.toLocaleString()}</p>
                   <p className={`text-xs ${secondaryTextClass}`}>kg over {years} years</p>
                 </div>
                 <div className={`rounded-2xl border ${borderClass} ${cardBgClass} p-5`}>
                   <p className={`text-[10px] font-bold uppercase tracking-[.15em] ${isDark ? "text-[#8fbd91]" : "text-[#186a43]"}`}>
-                    Cooling Effect
+                    {t("coolingEffect")}
                   </p>
                   <p className="mt-3 font-serif text-2xl text-[var(--heading)]">{results.cooling.toLocaleString()}</p>
                   <p className={`text-xs ${secondaryTextClass}`}>estimated m²</p>
                 </div>
                 <div className={`rounded-2xl border ${borderClass} ${cardBgClass} p-5`}>
                   <p className={`text-[10px] font-bold uppercase tracking-[.15em] ${isDark ? "text-[#8fbd91]" : "text-[#186a43]"}`}>
-                    Annual Water
+                    {t("annualWater")}
                   </p>
                   <p className="mt-3 font-serif text-2xl text-[var(--heading)]">{(results.annualWater / 1000).toFixed(1)}</p>
                   <p className={`text-xs ${secondaryTextClass}`}>K liters/year</p>
@@ -1359,7 +1375,7 @@ export default function EnvironmentalCalculator() {
 
             <div className={`border-t ${borderClass} p-6 sm:p-10 lg:p-12`}>
               <p className="mb-6 text-[10px] font-bold uppercase tracking-[.2em] text-[#d89a68]">
-                06 / Growth forecast
+                06 / {t("growthForecast")}
               </p>
               <ImpactTrendChart palm={palm} trees={trees} years={years} darkMode={isDark} />
             </div>
@@ -1368,9 +1384,9 @@ export default function EnvironmentalCalculator() {
               <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="mb-2 text-[10px] font-bold uppercase tracking-[.2em] text-[#d89a68]">
-                    07 / Report export
+                    07 / {t("reportExport")}
                   </p>
-                  <h3 className="font-serif text-3xl leading-none text-[var(--heading)]">Download your impact summary.</h3>
+                  <h3 className="font-serif text-3xl leading-none text-[var(--heading)]">{t("downloadSummary")}</h3>
                 </div>
                 <button
                   type="button"
@@ -1382,7 +1398,7 @@ export default function EnvironmentalCalculator() {
                     <path d="M7 19l5 5 5-5" />
                     <path d="M4 21h16" />
                   </svg>
-                  Download Impact Report (PDF)
+                  {t("downloadPdf")}
                 </button>
               </div>
             </div>
