@@ -70,6 +70,7 @@ function PremiumDecorativePalm({ isDark, palmName = "Date Palm" }) {
   const sunBeamRef = useRef(null);
   const shadowRef = useRef(null);
   const sceneRef = useRef(null);
+  const sceneTweens = useRef(new Set());
 
   useGSAP(() => {
     // Gentle natural wind sway for palm canopy
@@ -155,6 +156,23 @@ function PremiumDecorativePalm({ isDark, palmName = "Date Palm" }) {
     );
   }, [isDark]);
 
+  useEffect(() => {
+    return () => {
+      sceneTweens.current.forEach((tween) => tween.kill());
+      sceneTweens.current.clear();
+    };
+  }, []);
+
+  const animateScene = (properties) => {
+    const tween = gsap.to(sceneRef.current, {
+      ...properties,
+      onComplete: () => {
+        sceneTweens.current.delete(tween);
+      },
+    });
+    sceneTweens.current.add(tween);
+  };
+
   // Subtle 3D parallax on mouse movement
   const handleMouseMove = (e) => {
     if (!cardRef.current || !sceneRef.current) return;
@@ -162,7 +180,7 @@ function PremiumDecorativePalm({ isDark, palmName = "Date Palm" }) {
     const xPos = (e.clientX - rect.left) / rect.width - 0.5;
     const yPos = (e.clientY - rect.top) / rect.height - 0.5;
 
-    gsap.to(sceneRef.current, {
+    animateScene({
       x: xPos * 12,
       y: yPos * 8,
       rotationY: xPos * 4,
@@ -174,7 +192,7 @@ function PremiumDecorativePalm({ isDark, palmName = "Date Palm" }) {
 
   const handleMouseLeave = () => {
     if (!sceneRef.current) return;
-    gsap.to(sceneRef.current, {
+    animateScene({
       x: 0,
       y: 0,
       rotationY: 0,
@@ -513,7 +531,7 @@ function OrbitalLeaf({ isDark }) {
   return (
     <div
       ref={orbitContainer}
-      className="relative flex h-[220px] w-[220px] items-center justify-center lg:h-[240px] lg:w-[240px]"
+      className="orbital-leaf relative flex h-[220px] w-[220px] items-center justify-center lg:h-[240px] lg:w-[240px]"
     >
       {/* Soft glow */}
       <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,_rgba(143,189,145,0.15),transparent_70%)] blur-xl" />
@@ -782,6 +800,8 @@ export default function EnvironmentalCalculator() {
   const expandedPanel = useRef(null);
   const headerRef = useRef(null);
   const backButtonRef = useRef(null);
+  const expandAnimationFrame = useRef(null);
+  const expandedPanelTween = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { lang, dir, setLang, t } = useLanguage();
@@ -840,6 +860,15 @@ export default function EnvironmentalCalculator() {
     localStorage.setItem("nakheel-theme", theme);
   }, [isDark]);
 
+  useEffect(() => {
+    return () => {
+      if (expandAnimationFrame.current !== null) {
+        cancelAnimationFrame(expandAnimationFrame.current);
+      }
+      expandedPanelTween.current?.kill();
+    };
+  }, []);
+
   const recommended = Math.round(trees * palm.spacing ** 2);
   const area = Number(override) || recommended;
 
@@ -880,15 +909,16 @@ export default function EnvironmentalCalculator() {
   const toggle = () => {
     if (!expanded) {
       setExpanded(true);
-      requestAnimationFrame(() => {
-        gsap.fromTo(
+      expandAnimationFrame.current = requestAnimationFrame(() => {
+        expandAnimationFrame.current = null;
+        expandedPanelTween.current = gsap.fromTo(
           expandedPanel.current,
           { height: 0, opacity: 0 },
           { height: "auto", opacity: 1, duration: 0.8, ease: "power3.inOut" }
         );
       });
     } else {
-      gsap.to(expandedPanel.current, {
+      expandedPanelTween.current = gsap.to(expandedPanel.current, {
         height: 0,
         opacity: 0,
         duration: 0.5,
@@ -964,6 +994,14 @@ export default function EnvironmentalCalculator() {
       return;
     }
 
+    const closeAfterPrint = () => reportWindow.close();
+    const printReport = () => {
+      reportWindow.focus();
+      reportWindow.print();
+    };
+
+    reportWindow.addEventListener("afterprint", closeAfterPrint, { once: true });
+
     const rowsHtml = [
       ["Palm variety", palm.name],
       ["Number of palms", `${trees}`],
@@ -980,19 +1018,14 @@ export default function EnvironmentalCalculator() {
 
     reportWindow.document.write(`<!doctype html><html><head><title>Nakheel Impact Report</title><style>body{font-family:Arial,sans-serif;margin:0;padding:28px;background:#f7f2e8;color:#102b23}.report{max-width:720px;margin:0 auto;background:#fffdf9;border:1px solid #e7deca;border-radius:18px;overflow:hidden}.header{background:linear-gradient(135deg,#1f8a54,#0f3d2e);color:#fff;padding:28px 32px}.header h1{margin:0;font-size:30px;font-family:Georgia,serif}.meta{margin-top:8px;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;opacity:0.82}.content{padding:28px 32px 8px}table{width:100%;border-collapse:collapse}td{border-bottom:1px solid #e7deca;padding:14px 0;font-size:14px}td:first-child{color:#5d6d63;font-weight:700}td:last-child{text-align:right;font-weight:800}.footer{padding:18px 32px 30px;color:#5d6d63;font-size:12px}</style></head><body><div class="report"><div class="header"><div class="meta">Nakheel · Palm care & urban greening</div><h1>Environmental Impact Report</h1></div><div class="content"><table>${rowsHtml}</table></div><div class="footer">Generated on ${new Date().toLocaleDateString()} · Illustrative planning figures.</div></div></body></html>`);
     reportWindow.document.close();
-    reportWindow.focus();
-
-    setTimeout(() => {
-      reportWindow.print();
-      setTimeout(() => reportWindow.close(), 1000);
-    }, 250);
+    reportWindow.requestAnimationFrame(printReport);
   };
 
   return (
     <div
       ref={root}
       dir={dir}
-      className={`min-h-screen overflow-x-hidden ${bgClass} ${textClass} transition-colors duration-500`}
+      className={`min-h-screen overflow-x-hidden font-sans ${bgClass} ${textClass} transition-colors duration-500`}
     >
       {/* Background gradient glow */}
       <div
@@ -1230,7 +1263,7 @@ export default function EnvironmentalCalculator() {
               <button
                 type="button"
                 onClick={toggle}
-                className="mt-4 flex w-full items-center justify-between rounded-xl bg-[#8fbd91] px-5 py-4 text-left text-sm font-bold text-[#102019] transition-all hover:bg-[#a5cca7]"
+                className="mt-4 flex w-full items-center justify-between rounded-xl bg-[#8fbd91] px-5 py-4 text-left text-sm font-bold text-[#102019] transition-all hover:bg-[#a5cca7] rtl:text-right"
               >
                 {expanded ? t("closePreview") : t("continuePreview")}
                 <Arrow />

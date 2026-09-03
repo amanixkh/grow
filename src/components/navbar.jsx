@@ -6,9 +6,16 @@ import { useLanguage } from "../LanguageContext";
 export default function Navbar({ variant = "home", darkMode, setDarkMode }) {
   const navRef = useRef(null);
   const logoRef = useRef(null);
+  const interactionTweens = useRef(new Set());
   const navigate = useNavigate();
   const { lang, setLang, t } = useLanguage();
   const isDark = darkMode ?? false;
+
+  const trackInteractionTween = (tween) => {
+    interactionTweens.current.add(tween);
+    tween.eventCallback("onComplete", () => interactionTweens.current.delete(tween));
+    return tween;
+  };
 
   const toggleDark = () => {
     const next = !isDark;
@@ -19,7 +26,7 @@ export default function Navbar({ variant = "home", darkMode, setDarkMode }) {
       document.documentElement.setAttribute("data-theme", next ? "dark" : "light");
       localStorage.setItem("nakheel-theme", next ? "dark" : "light");
     }
-    gsap.fromTo(".theme-icon", { rotate: -90, opacity: 0 }, { rotate: 0, opacity: 1, duration: 0.4, ease: "back.out(2)" });
+    trackInteractionTween(gsap.fromTo(".theme-icon", { rotate: -90, opacity: 0 }, { rotate: 0, opacity: 1, duration: 0.4, ease: "back.out(2)" }));
   };
 
   const scrollToId = (id) => (e) => {
@@ -48,11 +55,18 @@ export default function Navbar({ variant = "home", darkMode, setDarkMode }) {
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      interactionTweens.current.forEach((tween) => tween.kill());
+      interactionTweens.current.clear();
+    };
+  }, []);
+
   const handleLogoEnter = () => {
-    gsap.to(logoRef.current, { rotate: -14, scale: 1.08, duration: 0.35, ease: "power2.out" });
+    trackInteractionTween(gsap.to(logoRef.current, { rotate: -14, scale: 1.08, duration: 0.35, ease: "power2.out" }));
   };
   const handleLogoLeave = () => {
-    gsap.to(logoRef.current, { rotate: 0, scale: 1, duration: 0.45, ease: "elastic.out(1, 0.5)" });
+    trackInteractionTween(gsap.to(logoRef.current, { rotate: 0, scale: 1, duration: 0.45, ease: "elastic.out(1, 0.5)" }));
   };
 
   return (
@@ -62,7 +76,7 @@ export default function Navbar({ variant = "home", darkMode, setDarkMode }) {
         isDark ? "bg-[#142a22]/90 border-[#2f443b] text-white" : "bg-[#f4f1ea]/90 border-[#e7deca] text-[#1e293b]"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-[76px]">
+      <div className="max-w-7xl mx-auto flex h-[76px] items-center justify-between px-6 max-[700px]:h-auto max-[700px]:flex-wrap max-[700px]:gap-2 max-[700px]:py-3">
         <div className="flex items-center gap-3">
           <div
             ref={logoRef}
@@ -80,7 +94,7 @@ export default function Navbar({ variant = "home", darkMode, setDarkMode }) {
           </div>
         </div>
 
-        <div className="nav-right flex items-center gap-4">
+        <div className="nav-right flex items-center gap-4 max-[700px]:w-full max-[700px]:justify-between max-[700px]:gap-2">
           {variant === "details" ? (
             <button
               onClick={() => navigate(-1)}

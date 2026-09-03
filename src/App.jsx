@@ -132,8 +132,8 @@ export default function App() {
 
       <main className="relative z-[1] grid min-h-[calc(100vh-80px)] place-items-center">
         <div className="ml-[17vw] mr-auto mt-[-3vh] flex w-[min(88vw,480px)] flex-col items-start gap-6 text-left max-[700px]:ml-auto max-[700px]:mr-[8vw] max-[700px]:mt-[-8vh] max-[700px]:w-[82vw] max-[700px]:gap-[23px] rtl:mr-[17vw] rtl:ml-auto rtl:text-right max-[700px]:rtl:mr-[8vw]">
-          <div className="max-w-[430px]">
-            <div className="m-0 mb-3.5 whitespace-nowrap text-[clamp(27px,3.2vw,42px)] font-medium leading-[1.05] tracking-[.01em] text-[#fff3d2] max-[700px]:text-[29px]" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+          <div className="max-w-[430px] max-[700px]:min-w-0">
+            <div className="m-0 mb-3.5 whitespace-nowrap text-[clamp(27px,3.2vw,42px)] font-medium leading-[1.05] tracking-[.01em] text-[#fff3d2] max-[700px]:whitespace-normal max-[700px]:text-[29px]" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
               {t("landingTitle")}
             </div>
             <p className="m-0 text-[15px] font-semibold leading-[1.6] tracking-[.04em] text-[#f0cc83] max-[700px]:leading-[1.5]">

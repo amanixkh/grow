@@ -1,15 +1,7 @@
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "../lib/gsapConfig";
+import { gsap } from "../lib/gsapConfig";
 import { useLanguage } from "../LanguageContext";
-
-const REGION_OPTIONS = [
-  ["", "All regions"],
-  ["Shatt al-Arab", "Shatt al-Arab"],
-  ["Abu al-Khaseeb", "Abu al-Khaseeb"],
-  ["Zubair", "Zubair"],
-  ["Qurna", "Qurna"],
-  ["Fao", "Fao"],
-];
+import { getLocalizedProvince, PROVINCES } from "../Data/plams";
 const LEVEL_OPTIONS = [
   ["", "All"],
   ["high", "High"],
@@ -31,13 +23,6 @@ const FIELD_ICON = {
   sort: <path d="M7 4v13M7 17l-3-3M7 17l3-3M17 20V7M17 7l-3 3M17 7l3 3" />,
 };
 
-const FIELDS = [
-  { key: "region", label: "Region", options: REGION_OPTIONS },
-  { key: "salinity", label: "Salinity tolerance", options: LEVEL_OPTIONS },
-  { key: "water", label: "Water needs", options: LEVEL_OPTIONS },
-  { key: "sort", label: "Sort by", options: SORT_OPTIONS },
-];
-
 export default function FilterPanel({
   filters,
   setFilters,
@@ -49,10 +34,10 @@ export default function FilterPanel({
   const panelRef = useRef(null);
   const countRef = useRef(null);
   const prevCount = useRef(resultCount);
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
 
   const fields = [
-    { key: "region", label: t("region"), options: [["", t("allRegions")], ...REGION_OPTIONS.slice(1)] },
+    { key: "region", label: t("region"), options: [["", t("allRegions")], ...PROVINCES.map((province) => [province.id, getLocalizedProvince(province, lang)])] },
     { key: "salinity", label: t("salinity"), options: [["", t("all")], ["high", t("high")], ["med", t("medium")], ["low", t("low")]] },
     { key: "water", label: t("waterNeeds"), options: [["", t("all")], ["high", t("high")], ["med", t("medium")], ["low", t("low")]] },
     { key: "sort", label: t("sortBy"), options: [["name", t("sortName")], ["shade", t("sortShade")], ["salinity", t("sortSalinity")]] },
@@ -71,12 +56,6 @@ export default function FilterPanel({
         y: 24,
         duration: 0.7,
         ease: "power2.out",
-        scrollTrigger: {
-          trigger: panelRef.current,
-          start: "top 88%",
-          end: "bottom 15%",
-          toggleActions: "play reverse play reverse",
-        },
       });
     }, panelRef);
     return () => ctx.revert();
@@ -84,18 +63,21 @@ export default function FilterPanel({
 
   useEffect(() => {
     if (prevCount.current !== resultCount && countRef.current) {
-      gsap.fromTo(
+      const tween = gsap.fromTo(
         countRef.current,
         { scale: 1.35, color: "#1F8A54" },
         { scale: 1, color: "#14663F", duration: 0.45, ease: "back.out(3)" }
       );
+
+      prevCount.current = resultCount;
+      return () => tween.kill();
     }
     prevCount.current = resultCount;
   }, [resultCount]);
 
   const activeChips = [
     filters.query && { key: "query", label: `"${filters.query}"`, clear: clearOne("query") },
-    filters.region && { key: "region", label: filters.region, clear: clearOne("region") },
+    filters.region && { key: "region", label: getLocalizedProvince(PROVINCES.find((province) => province.id === filters.region), lang), clear: clearOne("region") },
     filters.salinity && {
       key: "salinity",
       label: `${t("salinity")}: ${fields[1].options.find(([v]) => v === filters.salinity)?.[1]}`,
