@@ -146,3 +146,10 @@ html, body {
   overflow-y: auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+html[dir="rtl"],
+html[dir="rtl"] body,
+html[dir="rtl"] .font-sans,
+html[dir="rtl"] .font-serif {
+  font-family: Tahoma, Arial, sans-serif;
+}

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "../lib/gsapConfig";
 import { useLanguage } from "../LanguageContext";
+import { getLocalizedPalm } from "../Data/plams";
 
 const LEVEL_LABEL = {
   high: "High",
@@ -53,16 +54,19 @@ function LevelMeter({ level }) {
 function PalmCard({ palm, isActive, isDimmed, onToggle }) {
   const cardRef = useRef(null);
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
+  const displayPalm = getLocalizedPalm(palm, lang);
 
   useEffect(() => {
     if (!cardRef.current) return;
 
-    gsap.to(cardRef.current, {
+    const tween = gsap.to(cardRef.current, {
       scale: isActive ? 1.035 : 1,
       duration: 0.4,
       ease: "power3.out"
     });
+
+    return () => tween.kill();
   }, [isActive]);
 
   const goToDetails = (e) => {
@@ -116,7 +120,7 @@ function PalmCard({ palm, isActive, isDimmed, onToggle }) {
 
           <div className="min-w-0">
             <h3 className="text-[19px] font-extrabold text-[var(--heading)] truncate dark:text-white">
-              {palm.name}
+              {displayPalm.name}
             </h3>
           </div>
         </div>
@@ -127,7 +131,7 @@ function PalmCard({ palm, isActive, isDimmed, onToggle }) {
       </div>
 
       <p className="text-[13.5px] text-[var(--muted)] leading-relaxed min-h-[42px] dark:text-stone-200">
-        {palm.desc}
+        {displayPalm.desc}
       </p>
 
       <div className="flex flex-col gap-3 py-1">
@@ -147,7 +151,7 @@ function PalmCard({ palm, isActive, isDimmed, onToggle }) {
       </div>
 
       <div className="flex flex-wrap gap-1.5">
-        {palm.areas.map((a) => (
+        {displayPalm.areas.map((a) => (
           <span
             className="text-[11px] font-bold text-[var(--tag-green-text)] bg-[var(--tag-green-bg)] px-2.5 py-1 rounded-full"
             key={a}
@@ -168,7 +172,7 @@ function PalmCard({ palm, isActive, isDimmed, onToggle }) {
           <path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0012 3z" />
         </svg>
 
-        <span>{palm.tip}</span>
+        <span>{displayPalm.tip}</span>
       </div>
 
       {isActive && (

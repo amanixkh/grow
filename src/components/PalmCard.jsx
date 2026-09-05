@@ -33,11 +33,13 @@ export default function PalmCard({ palm, isActive, isDimmed, onToggle }) {
 
   useEffect(() => {
     if (!cardRef.current) return;
-    gsap.to(cardRef.current, {
+    const tween = gsap.to(cardRef.current, {
       scale: isActive ? 1.035 : 1,
       duration: 0.4,
       ease: "power3.out",
     });
+
+    return () => tween.kill();
   }, [isActive]);
 
   const goToDetails = (e) => {

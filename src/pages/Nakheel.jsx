@@ -4,7 +4,7 @@ import Hero from "../components/hero";
 import FilterPanel from "../components/filterPanel";
 import CardsGrid from "../components/cardsplam";
 import Footer from "../components/footer";
-import { PALMS, LEVEL_RANK } from "../Data/plams";
+import { getLocalizedPalm, PALMS, LEVEL_RANK, palmMatchesProvince, palmMatchesProvinceQuery, PROVINCES } from "../Data/plams";
 import { useLanguage } from "../LanguageContext";
 
 const DEFAULT_FILTERS = {
@@ -17,7 +17,7 @@ const DEFAULT_FILTERS = {
 
 const dashboardStats = [
   {
-    value: 14,
+    value: PALMS.length,
     label: "Documented palm varieties",
     icon: (
       <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]" fill="none" aria-hidden="true">
@@ -28,7 +28,7 @@ const dashboardStats = [
     color: "#1F8A54",
   },
   {
-    value: 14,
+    value: PROVINCES.length,
     label: "Regions covered across Iraq",
     icon: (
       <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]" fill="none" aria-hidden="true">
@@ -77,7 +77,7 @@ const waterBreakdown = [
 ];
 
 export default function Nakheel() {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [darkMode, setDarkMode] = useState(() => {
     if (typeof window === "undefined") return false;
@@ -96,8 +96,8 @@ export default function Nakheel() {
     const q = filters.query.trim().toLowerCase();
 
     let list = PALMS.filter((palm) => {
-      const matchesQuery = !q || palm.name.toLowerCase().includes(q);
-      const matchesRegion = !filters.region || palm.areas.includes(filters.region);
+      const matchesQuery = !q || palm.name.toLowerCase().includes(q) || getLocalizedPalm(palm, lang).name.toLowerCase().includes(q) || palmMatchesProvinceQuery(palm, q);
+      const matchesRegion = !filters.region || palmMatchesProvince(palm, filters.region);
       const matchesSalinity = !filters.salinity || palm.salinity === filters.salinity;
       const matchesWater = !filters.water || palm.water === filters.water;
 
@@ -117,7 +117,7 @@ export default function Nakheel() {
     }
 
     return list;
-  }, [filters]);
+  }, [filters, lang]);
 
   const hasActiveFilter =
     !!filters.query ||
@@ -128,7 +128,7 @@ export default function Nakheel() {
   const labels = {
     title: lang === "ar" ? "معلومات سريعة" : "Quick overview",
     varieties: lang === "ar" ? "أنواع النخيل المسجلة" : "Documented palm varieties",
-    regions: lang === "ar" ? "المناطق المغطاة في العراق" : "Regions covered across Iraq",
+    regions: t("provincesCovered"),
     tolerant: lang === "ar" ? "أنواع تتحمل الملوحة العالية" : "Highly salinity-tolerant varieties",
     browser: lang === "ar" ? "يعمل بالكامل داخل المتصفح بدون خادم" : "Runs entirely in the browser, no server",
     chartTitle: lang === "ar" ? "توزيع الأنواع في لمحة سريعة" : "Variety distribution at a glance",
@@ -140,7 +140,7 @@ export default function Nakheel() {
   };
 
   return (
-    <div className={`min-h-screen font-sans transition-colors duration-300 ${darkMode ? "bg-[#0b1f15] text-white" : "bg-[#f4f1ea] text-[#1e293b]"}`} dir={lang === "ar" ? "rtl" : "ltr"}>
+    <div className={`min-h-screen font-sans transition-colors duration-300 ${darkMode ? "bg-[#0b1f15] text-white" : "bg-[#f4f1ea] text-[#1e293b]"}`} dir={lang === "en" ? "ltr" : "rtl"}>
       <Navbar variant="dashboard" darkMode={darkMode} setDarkMode={setDarkMode} />
       <Hero />
 

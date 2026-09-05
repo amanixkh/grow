@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { PALMS, LEVEL_LABEL } from "../Data/plams";
+import { getLocalizedPalm, PALMS, LEVEL_LABEL } from "../Data/plams";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import { useLanguage } from "../LanguageContext";
@@ -81,6 +81,7 @@ useEffect(() => {
 }, [darkMode]);
 
 const palm = PALMS.find((p) => String(p.id) === id);
+const displayPalm = palm ? getLocalizedPalm(palm, lang) : null;
 
 useLayoutEffect(() => {
   window.scrollTo(0, 0);
@@ -115,7 +116,7 @@ p.id !== palm.id &&
 .slice(0, 3);
 
 return (
-<div className={`min-h-screen font-sans transition-colors duration-300 ${darkMode ? "bg-[#0b1f15] text-white" : "bg-[#f4f1ea] text-[#1e293b]"}`} dir={lang === "ar" ? "rtl" : "ltr"}>
+<div className={`min-h-screen font-sans transition-colors duration-300 ${darkMode ? "bg-[#0b1f15] text-white" : "bg-[#f4f1ea] text-[#1e293b]"}`} dir={lang === "en" ? "ltr" : "rtl"}>
 <Navbar variant="details" darkMode={darkMode} setDarkMode={setDarkMode} />
 
 <main className="max-w-[1050px] mx-auto px-5 md:px-8 py-10 md:py-14">
@@ -138,7 +139,7 @@ return (
 <div className="absolute inset-y-0 right-0 w-[55%] md:w-[48%] pointer-events-none">
 <img
 src={palm.image}
-alt={palm.name}
+alt={displayPalm.name}
 className="w-full h-full object-cover opacity-65"
 style={{
 maskImage:
@@ -160,11 +161,11 @@ WebkitMaskImage:
 </div>
 
 <h1 className="font-serif text-[36px] md:text-[46px] font-black text-[var(--heading)] tracking-tight leading-none">
-{palm.name}
+{displayPalm.name}
 </h1>
 
 <p className="mt-4 text-[14px] md:text-[15px] text-[var(--muted)] leading-relaxed max-w-[470px]">
-{palm.desc}
+{displayPalm.desc}
 </p>
 
 <div className="mt-4">
@@ -173,7 +174,7 @@ WebkitMaskImage:
 </div>
 
 <div className="flex flex-wrap gap-1.5">
-{palm.areas.map((area) => (
+{displayPalm.areas.map((area) => (
 <span
 key={area}
 className="text-[11px] font-bold text-[var(--tag-green-text)] bg-[var(--tag-green-bg)] px-2.5 py-1.5 rounded-full"
@@ -203,7 +204,7 @@ className="text-[11px] font-bold text-[var(--tag-green-text)] bg-[var(--tag-gree
 </div>
 
 <p className="text-[14px] text-[var(--muted)] leading-relaxed">
-{palm.tip || palm.desc}
+{displayPalm.tip || displayPalm.desc}
 </p>
 </section>
 
@@ -266,10 +267,10 @@ className="w-5 h-5 text-[var(--tag-tan-text)]"
 
 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
 
-<InfoCard label={t("harvestSeason")} value={palm.harvest} />
-<InfoCard label={t("palmHeight")} value={palm.height} />
-<InfoCard label={t("productiveAge")} value={palm.productiveAge} />
-<InfoCard label={t("fruitColor")} value={palm.fruitColor} />
+<InfoCard label={t("harvestSeason")} value={displayPalm.harvest} />
+<InfoCard label={t("palmHeight")} value={displayPalm.height} />
+<InfoCard label={t("productiveAge")} value={displayPalm.productiveAge} />
+<InfoCard label={t("fruitColor")} value={displayPalm.fruitColor} />
 
 </div>
 </section>
@@ -297,7 +298,7 @@ className="w-5 h-5 text-[var(--tag-tan-text)]"
 </h2>
 
 <p className="text-[13.5px] text-[var(--muted)] leading-relaxed">
-{palm.history}
+{displayPalm.history}
 </p>
 </div>
 
@@ -317,11 +318,11 @@ className="w-5 h-5 text-[var(--tag-tan-text)]"
 <button
 key={p.id}
 onClick={() => navigate(`/plant/${p.id}`)}
-className="text-left bg-[var(--surface)] border border-[var(--border)] rounded-[16px] p-4 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:bg-[var(--surface-soft)] hover:border-[var(--accent)] hover:shadow-[0_14px_30px_-18px_rgba(0,0,0,0.45)]"
+className="text-left rtl:text-right bg-[var(--surface)] border border-[var(--border)] rounded-[16px] p-4 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:bg-[var(--surface-soft)] hover:border-[var(--accent)] hover:shadow-[0_14px_30px_-18px_rgba(0,0,0,0.45)]"
 >
 
 <div className="font-extrabold text-[var(--heading)] text-[14.5px]">
-{p.name}
+{getLocalizedPalm(p, lang).name}
 </div>
 
 <div className="text-[11px] text-[var(--muted)] mt-1">
