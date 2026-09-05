@@ -194,6 +194,29 @@ function PalmCard({ palm, isActive, isDimmed, onToggle }) {
 
 export default function CardsGrid({ palms }) {
   const [activeId, setActiveId] = useState(null);
+  const [isBlurActive, setIsBlurActive] = useState(false);
+  const resetTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (resetTimerRef.current) {
+        clearTimeout(resetTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleCardClick = (palmId) => {
+    if (resetTimerRef.current) {
+      clearTimeout(resetTimerRef.current);
+    }
+
+    setActiveId(palmId);
+    setIsBlurActive(true);
+    resetTimerRef.current = setTimeout(() => {
+      setIsBlurActive(false);
+      resetTimerRef.current = null;
+    }, 5000);
+  };
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 pb-16">
@@ -202,12 +225,8 @@ export default function CardsGrid({ palms }) {
           key={palm.id}
           palm={palm}
           isActive={activeId === palm.id}
-          isDimmed={activeId !== null && activeId !== palm.id}
-          onToggle={() =>
-            setActiveId((current) =>
-              current === palm.id ? null : palm.id
-            )
-          }
+          isDimmed={isBlurActive && activeId !== null && activeId !== palm.id}
+          onToggle={() => handleCardClick(palm.id)}
         />
       ))}
     </section>
