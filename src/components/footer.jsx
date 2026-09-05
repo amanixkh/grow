@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "../lib/gsapConfig";
+import { gsap } from "../lib/gsapConfig";
 import { useLanguage } from "../LanguageContext";
 
 export default function Footer() {

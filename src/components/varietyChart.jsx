@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { PALMS } from "../Data/plams";
-import { gsap, ScrollTrigger } from "../lib/gsapConfig";
+import { gsap } from "../lib/gsapConfig";
 
 const LEVEL_COLOR = { high: "#1F8A54", med: "#E08A34", low: "#C9645B" };
 const LEVEL_LABEL = { high: "High", med: "Medium", low: "Low" };

@@ -56,9 +56,10 @@ export default function Navbar({ variant = "home", darkMode, setDarkMode }) {
   }, []);
 
   useEffect(() => {
+    const tweens = interactionTweens.current;
     return () => {
-      interactionTweens.current.forEach((tween) => tween.kill());
-      interactionTweens.current.clear();
+      tweens.forEach((tween) => tween.kill());
+      tweens.clear();
     };
   }, []);
 

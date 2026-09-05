@@ -4,12 +4,6 @@ import { gsap } from "../lib/gsapConfig";
 import { useLanguage } from "../LanguageContext";
 import { getLocalizedPalm } from "../Data/plams";
 
-const LEVEL_LABEL = {
-  high: "High",
-  med: "Medium",
-  low: "Low"
-};
-
 const LEVEL_PCT = {
   high: 100,
   med: 62,

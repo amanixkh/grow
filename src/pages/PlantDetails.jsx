@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getLocalizedPalm, PALMS, LEVEL_LABEL } from "../Data/plams";
+import { getLocalizedPalm, PALMS } from "../Data/plams";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import { useLanguage } from "../LanguageContext";

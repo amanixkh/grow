@@ -9,6 +9,7 @@ import { LanguageProvider } from './LanguageContext.jsx'
 import './index.css'
 import './theme-vars.css'
 
+// eslint-disable-next-line react-refresh/only-export-components
 function ScrollToTop() {
   const { pathname } = useLocation();
 

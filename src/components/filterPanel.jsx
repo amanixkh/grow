@@ -2,18 +2,6 @@ import { useEffect, useRef } from "react";
 import { gsap } from "../lib/gsapConfig";
 import { useLanguage } from "../LanguageContext";
 import { getLocalizedProvince, PROVINCES } from "../Data/plams";
-const LEVEL_OPTIONS = [
-  ["", "All"],
-  ["high", "High"],
-  ["med", "Medium"],
-  ["low", "Low"],
-];
-const SORT_OPTIONS = [
-  ["name", "Name (A–Z)"],
-  ["shade", "Shade area (highest)"],
-  ["salinity", "Salinity tolerance (highest)"],
-];
-
 const FIELD_ICON = {
   region: (
     <path d="M12 21s7-6.5 7-11a7 7 0 10-14 0c0 4.5 7 11 7 11z M12 13a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />

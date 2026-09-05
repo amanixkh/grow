@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { PALMS } from "../Data/plams";
-import { gsap, ScrollTrigger } from "../lib/gsapConfig";
+import { gsap } from "../lib/gsapConfig";
 
 export default function StatsStrip() {
   const sectionRef = useRef(null);

@@ -157,9 +157,10 @@ function PremiumDecorativePalm({ isDark, palmName = "Date Palm" }) {
   }, [isDark]);
 
   useEffect(() => {
+    const tweens = sceneTweens.current;
     return () => {
-      sceneTweens.current.forEach((tween) => tween.kill());
-      sceneTweens.current.clear();
+      tweens.forEach((tween) => tween.kill());
+      tweens.clear();
     };
   }, []);
 
@@ -806,7 +807,7 @@ export default function EnvironmentalCalculator() {
   const navigate = useNavigate();
   const { lang, dir, setLang, t } = useLanguage();
 
-    const [palm, setPalm] = useState(location.state?.selectedPalm || PALMS[0]);
+  const [palm] = useState(location.state?.selectedPalm || PALMS[0]);
   const [trees, setTrees] = useState(location.state?.trees || 24);
   const [years, setYears] = useState(location.state?.years || 10);
   const [override, setOverride] = useState("");
